@@ -40,7 +40,7 @@ class Storage implements \JsonSerializable{
 		} )($entity->id);
 		$this->subPath = $this->entity::model()->getTable() . '/' . $itemPath;
 		$this->path = $config->path . '/' . $this->subPath;
-		$this->url = $config->url . $itemPath;
+		$this->url = $config->url .'/'.$this->subPath;
 
 		$this->field = AttachmentPlugin::fetch($entity::model())->field;
 		// Create Collections
