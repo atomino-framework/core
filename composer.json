@@ -1,0 +1,34 @@
+{
+    "name": "atomino/framework",
+    "description": "Atomino",
+    "keywords": [],
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Gergely Laborci",
+            "email": "gergely@laborci.hu"
+        }
+    ],
+    "require": {
+        "php-di/php-di": "^6.3",
+        "symfony/http-foundation": "^5.2",
+        "symfony/event-dispatcher": "^5.2",
+        "symfony/cache": "^5.2",
+        "twig/twig": "^3.1",
+        "ext-json": "*",
+        "monolog/monolog": "^2.1",
+        "ext-pdo": "*",
+        "rah/danpu": "^2.7",
+        "symfony/validator": "^5.2",
+        "symfony/console": "^5.2",
+        "nabil1337/case-helper": "^0.1.0",
+        "riimu/kit-phpencoder": "^2.4",
+        "vria/nodiacritic": "^0.1.2",
+        "symfony/mime": "^5.2", "ext-gd": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Atomino\\": "src/"
+        }
+    }
+}

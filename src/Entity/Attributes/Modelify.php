@@ -1,0 +1,15 @@
+<?php namespace Atomino\Entity\Attributes;
+
+use Atomino\Molecule\Attr;
+use Attribute;
+
+#[Attribute(Attribute::TARGET_CLASS)]
+class Modelify extends Attr{
+	public function __construct(
+		public string $connection,
+		public string $table,
+		public bool $mutable = true
+	){}
+
+
+}
