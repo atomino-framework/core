@@ -1,17 +1,18 @@
 <?php namespace Atomino\Database;
 
 use Atomino\Database\Finder\Filter;
+use JetBrains\PhpStorm\Pure;
 
 class Smart{
 
 	private \PDO $pdo;
-	public function __construct(private Connection $connection){
+	#[Pure] public function __construct(private Connection $connection){
 		$this->pdo = $this->connection->getPdo();
 	}
 
 	private function query(string $sql, array $args = []): bool|\PDOStatement{return $this->connection->query($this->applySQLArguments($sql, $args));}
 	private function quote($subject, $qm=true):string{return $this->connection->quote($subject, $qm);}
-	private function escape($subject):string{return $this->connection->escape($subject);}
+	#[Pure] private function escape($subject):string{return $this->connection->escape($subject);}
 
 	public function getFoundRows(){ return $this->getValue('SELECT FOUND_ROWS()'); }
 

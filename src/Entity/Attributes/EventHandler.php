@@ -1,8 +1,7 @@
 <?php namespace Atomino\Entity\Attributes;
 
-use Atomino\Molecule\Attr;
+use Atomino\Neutrons\Attr;
 use Attribute;
-
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class EventHandler extends Attr{

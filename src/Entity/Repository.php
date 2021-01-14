@@ -5,6 +5,7 @@ namespace Atomino\Entity;
 use Atomino\Database\Connection;
 use Atomino\Database\Finder\Comparison;
 use Atomino\Database\Finder\Filter;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -15,7 +16,7 @@ class Repository{
 	private string $entity;
 	private CacheInterface $cache;
 
-	public function __construct(private Model $model){
+	#[Pure] public function __construct(private Model $model){
 		$this->connection = $model->getConnection();
 		$this->table = $model->getTable();
 		$this->entity = $model->getEntity();

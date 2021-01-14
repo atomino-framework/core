@@ -2,6 +2,7 @@
 
 use Atomino\Database\Connection;
 use Atomino\Database\Descriptor\Field\Field;
+use JetBrains\PhpStorm\Pure;
 
 class Table{
 
@@ -25,7 +26,7 @@ class Table{
 	public function getName(): string{ return $this->name; }
 	/** @return \Atomino\Database\Descriptor\Field\Field[] */
 	public function getFields(): array{ return $this->fields; }
-	public function getField($field): ?Field{ return array_key_exists($field, $this->fields) ? $this->fields[$field] : null; }
+	#[Pure] public function getField($field): ?Field{ return array_key_exists($field, $this->fields) ? $this->fields[$field] : null; }
 	public function getPrimary(): ?Field{ return $this->primary; }
 
 }

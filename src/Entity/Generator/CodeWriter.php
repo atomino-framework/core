@@ -1,6 +1,4 @@
-<?php
-
-namespace Atomino\Entity\Generator;
+<?php namespace Atomino\Entity\Generator;
 
 class CodeWriter{
 	private array $code = [];

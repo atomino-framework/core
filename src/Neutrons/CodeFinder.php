@@ -1,4 +1,4 @@
-<?php namespace Atomino\Molecule;
+<?php namespace Atomino\Neutrons;
 
 use Composer\Autoload\ClassLoader;
 

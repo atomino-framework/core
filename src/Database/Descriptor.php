@@ -1,6 +1,7 @@
 <?php namespace Atomino\Database;
 
 use Atomino\Database\Descriptor\Table;
+use JetBrains\PhpStorm\Pure;
 
 class Descriptor{
 
@@ -19,5 +20,5 @@ class Descriptor{
 	public function getDatabase(): string{ return $this->database; }
 	/** @return Table[] */
 	public function getTables(): array{ return $this->tables; }
-	public function getTable($table): ?Table{ return array_key_exists($table, $this->tables) ? $this->tables[$table] : null; }
+	#[Pure] public function getTable($table): ?Table{ return array_key_exists($table, $this->tables) ? $this->tables[$table] : null; }
 }

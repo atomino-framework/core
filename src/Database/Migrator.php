@@ -4,6 +4,7 @@ use Atomino\Cli\Style;
 use Atomino\Database\Finder\Filter;
 use Atomino\Database\Migrator\Diff;
 use Atomino\Database\Migrator\Exception;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Console\Style\StyleInterface;
 
 class Migrator{
@@ -223,7 +224,7 @@ class Migrator{
 
 	protected function getPreviousStructure(){ return $this->connection->getSmart()->getValue("SELECT structure FROM " . $this->table . " ORDER BY version DESC LIMIT 1"); }
 
-	protected function stringifyVersionNumber($version){ return str_pad($version, 6, '0', STR_PAD_LEFT); }
+	#[Pure] protected function stringifyVersionNumber($version){ return str_pad($version, 6, '0', STR_PAD_LEFT); }
 
 	protected function calculateIntegrity($version){
 		if (!is_dir($this->stringifyVersionNumber($version))) return null;

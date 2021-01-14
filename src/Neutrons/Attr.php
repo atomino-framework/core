@@ -1,4 +1,4 @@
-<?php namespace Atomino\Molecule;
+<?php namespace Atomino\Neutrons;
 
 abstract class Attr{
 	public static function get(\ReflectionClass|\ReflectionMethod $reflection):static|null{

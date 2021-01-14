@@ -2,6 +2,8 @@
 
 namespace Atomino\Database\Migrator\Differ;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Class RegExpPattern.
  */
@@ -61,7 +63,7 @@ class RegExpPattern
     /**
      * @return string
      */
-    public static function column()
+    #[Pure] public static function column()
     {
         $pattern = '/\s*';
         $pattern .= '`(?<columnName>\S+?)`\s+';

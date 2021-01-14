@@ -16,6 +16,7 @@ use Atomino\Entity\Attributes\Relation;
 use Atomino\Entity\Attributes\Validator;
 use Atomino\Entity\Attributes\Virtual;
 use Atomino\Entity\Plugin\Plugin;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Contracts\Cache\CacheInterface;
 
 class Model{
@@ -154,18 +155,18 @@ class Model{
 	public function getRepository(): Repository{ return $this->repository; }
 
 	public function getFields(): array{ return $this->fields; }
-	public function getField(string $name): \Atomino\Entity\Field\Field|null{ return array_key_exists($name, $this->fields) ? $this->fields[$name] : null; }
-	public function hasField(string $name): bool{ return array_key_exists($name, $this->fields); }
+	#[Pure] public function getField(string $name): \Atomino\Entity\Field\Field|null{ return array_key_exists($name, $this->fields) ? $this->fields[$name] : null; }
+	#[Pure] public function hasField(string $name): bool{ return array_key_exists($name, $this->fields); }
 
 	public function getCache(): CacheInterface{ return $this->cache; }
-	public function generateCacheKey(int $id): string{ return md5($this->entity . '.' . $id); }
+	#[Pure] public function generateCacheKey(int $id): string{ return md5($this->entity . '.' . $id); }
 
-	public function hasGetter($name): bool{ return array_key_exists($name, $this->getters); }
+	#[Pure] public function hasGetter($name): bool{ return array_key_exists($name, $this->getters); }
 	public function getGetter($name): string{ return $this->getters[$name]; }
-	public function hasSetter($name): bool{ return array_key_exists($name, $this->setters); }
+	#[Pure] public function hasSetter($name): bool{ return array_key_exists($name, $this->setters); }
 	public function getSetter($name): string{ return $this->setters[$name]; }
 
-	public function hasRelation($name): bool{ return array_key_exists($name, $this->relations); }
+	#[Pure] public function hasRelation($name): bool{ return array_key_exists($name, $this->relations); }
 	public function getRelation($name): Relation{ return $this->relations[$name]; }
 	/** @return \Atomino\Entity\Attributes\Relation[] */
 	public function getRelations(): array{ return $this->relations; }
@@ -176,9 +177,9 @@ class Model{
 	 * @param $event
 	 * @return string[]
 	 */
-	public function getEventHandlers($event): array{ return array_key_exists($event, $this->eventHandlers) ? $this->eventHandlers[$event] : []; }
+	#[Pure] public function getEventHandlers($event): array{ return array_key_exists($event, $this->eventHandlers) ? $this->eventHandlers[$event] : []; }
 	//public function getPluginData(string $name): array{ return array_key_exists($name, $this->pluginData) ? $this->pluginData[$name] : []; }
-	public function getPlugin(string $name): Plugin|null{ return array_key_exists($name, $this->plugins) ? $this->plugins[$name] : []; }
+	#[Pure] public function getPlugin(string $name): Plugin|null{ return array_key_exists($name, $this->plugins) ? $this->plugins[$name] : []; }
 
 	public function getEntityReflection(): \ReflectionClass{ return $this->entityReflection; }
 

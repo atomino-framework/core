@@ -11,7 +11,7 @@ use Atomino\Entity\Attributes\Virtual;
 use Atomino\Entity\Field\Attributes\FieldDescriptor;
 use Atomino\Entity\Model;
 use Atomino\Entity\Plugin\Plugin;
-use Atomino\Molecule\CodeFinder;
+use Atomino\Neutrons\CodeFinder;
 use CaseHelper\CamelCaseHelper;
 use CaseHelper\SnakeCaseHelper;
 use Composer\Autoload\ClassLoader;

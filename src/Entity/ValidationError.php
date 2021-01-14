@@ -1,11 +1,13 @@
 <?php namespace Atomino\Entity;
 
 
+use JetBrains\PhpStorm\Pure;
+
 class ValidationError extends \Exception {
 
 	private $errors = [];
 
-	public function __construct($errors){
+	#[Pure] public function __construct($errors){
 		$this->errors = $errors;
 		parent::__construct("Validation error");
 	}

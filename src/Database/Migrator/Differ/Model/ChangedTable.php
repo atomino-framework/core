@@ -2,6 +2,8 @@
 
 namespace Atomino\Database\Migrator\Differ\Model;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Class ChangedTable.
  */
@@ -85,7 +87,7 @@ class ChangedTable
     /**
      * @return string
      */
-    public function getName()
+    #[Pure] public function getName()
     {
         return $this->toTable->getName();
     }
@@ -409,7 +411,7 @@ class ChangedTable
      *
      * @return string
      */
-    private function getAfterClause(Column $column)
+    #[Pure] private function getAfterClause(Column $column)
     {
         if ($column->getPreviousColumn() instanceof Column) {
             return sprintf('AFTER `%s`', $column->getPreviousColumn()->getName());

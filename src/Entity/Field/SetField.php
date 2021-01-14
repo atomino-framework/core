@@ -1,13 +1,14 @@
 <?php namespace Atomino\Entity\Field;
 
 use Atomino\Entity\Field\Attributes\FieldDescriptor;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Validator\Constraints\Choice;
 
 #[FieldDescriptor('array', [], true)]
 class SetField extends Field{
-	public function build(mixed $value){ return is_null($value) ? [] : explode(',', $value); }
-	public function store(mixed $value){ return join(',', $value); }
-	public function import(mixed $value){ return is_null($value) ? null : intval($value); }
+	#[Pure] public function build(mixed $value){ return is_null($value) ? [] : explode(',', $value); }
+	#[Pure] public function store(mixed $value){ return join(',', $value); }
+	#[Pure] public function import(mixed $value){ return is_null($value) ? null : intval($value); }
 
 	/** @param \Atomino\Database\Descriptor\Field\EnumField $field */
 	static function getValidators(\Atomino\Database\Descriptor\Field\Field $field):array{

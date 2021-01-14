@@ -2,7 +2,7 @@
 
 use Atomino\Entity\Generator\CodeWriter;
 use Atomino\Entity\Model;
-use Atomino\Molecule\Attr;
+use Atomino\Neutrons\Attr;
 
 class Plugin extends Attr{
 	public static function fetch(Model $model): static{

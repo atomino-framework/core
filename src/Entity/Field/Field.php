@@ -1,5 +1,6 @@
 <?php namespace Atomino\Entity\Field;
 
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 abstract class Field{
@@ -9,7 +10,7 @@ abstract class Field{
 
 	public function getDefault(): mixed{ return null; }
 
-	public function __construct(
+	#[Pure] public function __construct(
 		private string $name,
 		private null|bool $get,
 		private null|bool $set,
@@ -29,7 +30,7 @@ abstract class Field{
 	public function getOptions(){ return $this->options; }
 	public function getOption($name){ return $this->options[$name]; }
 
-	public function isProtected(){ return !is_null($this->get); }
+	#[Pure] public function isProtected(){ return !is_null($this->get); }
 
 	public function build(mixed $value){ return $value; }
 	public function store(mixed $value){ return $value; }

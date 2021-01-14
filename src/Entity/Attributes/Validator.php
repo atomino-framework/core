@@ -1,6 +1,6 @@
 <?php namespace Atomino\Entity\Attributes;
 
-use Atomino\Molecule\Attr;
+use Atomino\Neutrons\Attr;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
 

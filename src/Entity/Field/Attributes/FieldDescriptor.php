@@ -1,6 +1,6 @@
 <?php namespace Atomino\Entity\Field\Attributes;
 
-use Atomino\Molecule\Attr;
+use Atomino\Neutrons\Attr;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class FieldDescriptor extends Attr{

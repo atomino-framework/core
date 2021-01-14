@@ -1,6 +1,6 @@
 <?php namespace Atomino\Cli\Attributes;
 
-use Atomino\Molecule\Attr;
+use Atomino\Neutrons\Attr;
 use Attribute;
 
 #[Attribute( Attribute::TARGET_METHOD )]
