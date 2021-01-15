@@ -66,7 +66,7 @@ class Generator{
 			if (file_exists($file)){
 				$this->style->_task_warn('already exists');
 			}else{
-				$template = file_get_contents(__DIR__ . '/@resources/' . $templateFile);
+				$template = file_get_contents(__DIR__ . '/$resources/' . $templateFile);
 				$template = strtr($template, $translate);
 				file_put_contents($file, $template);
 				$this->style->_task_ok();
@@ -279,7 +279,7 @@ class Generator{
 			$translate['{{interface}}'] = $cw->getInterface();
 
 			$style->_task("{$this->shadowPath}/_{$class}.php");
-			$template = file_get_contents(__DIR__ . '/@resources/shadow.txt');
+			$template = file_get_contents(__DIR__ . '/$resources/shadow.txt');
 			$template = strtr($template, $translate);
 			$outfile = Application::ENV()->getRoot() . "{$this->shadowPath}/_{$class}.php";
 

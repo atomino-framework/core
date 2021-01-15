@@ -10,12 +10,16 @@ abstract class Router implements HttpRunnerInterface{
 	private ParameterBag $hostBag;
 	private ParameterBag $pathBag;
 	private Pipeline $pipeline;
+	private Request $request;
+	private Matcher $matcher;
 	public function getRequest(): Request{ return $this->request; }
 	public function getPathBag(): ParameterBag{ return $this->pathBag; }
 	public function getHostBag(): ParameterBag{ return $this->hostBag; }
 	public function getPipeline(): Pipeline{ return $this->pipeline; }
 
-	public function __construct(private Request $request, private Matcher $matcher){
+	public function __construct(){
+		$this->request = Application::DIC()->get(Request::class);
+		$this->matcher = Application::DIC()->get(Matcher::class);
 		$this->hostBag = new ParameterBag();
 		$this->pathBag = new ParameterBag();
 		$this->pipeline = Application::DIC()->make(Pipeline::class, ['request' => $this->request, 'hostBag' => $this->hostBag, 'pathBag' => $this->pathBag]);

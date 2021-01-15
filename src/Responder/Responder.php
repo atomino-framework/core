@@ -42,7 +42,13 @@ abstract class Responder implements ResponderInterface{
 		$this->pathBag = $pathBag;
 		$this->hostBag = $hostBag;
 		$this->argsBag = $argsBag;
-		$this->dataBag = new ParameterBag($this->request->toArray());
+		try{
+			$data =  $this->request->toArray();
+		}catch (\Exception $e){
+			$data = [];
+		}
+
+		$this->dataBag = new ParameterBag($data);
 		return $this->respond($response);
 	}
 
