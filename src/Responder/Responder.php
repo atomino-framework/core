@@ -20,6 +20,7 @@ abstract class Responder implements ResponderInterface{
 	private ParameterBag $argsBag;
 	private ParameterBag $hostBag;
 	private ParameterBag $pathBag;
+	private ParameterBag $dataBag;
 
 	protected function getRequest(): Request{ return $this->request; }
 	protected function getPathBag(): ParameterBag{ return $this->pathBag; }
@@ -34,12 +35,14 @@ abstract class Responder implements ResponderInterface{
 	protected function getServerBag(): ServerBag{ return $this->request->server; }
 	protected function getRequestContent(): string{ return $this->request->getContent(); }
 	protected function getRequestData(): array{ return $this->request->toArray(); }
+	protected function getDataBag(): ParameterBag{ return $this->dataBag; }
 
 	public function exec(Response $response, Request $request, ParameterBag $hostBag, ParameterBag $pathBag, ParameterBag $argsBag):Response{
 		$this->request = $request;
 		$this->pathBag = $pathBag;
 		$this->hostBag = $hostBag;
 		$this->argsBag = $argsBag;
+		$this->dataBag = new ParameterBag($this->request->toArray());
 		return $this->respond($response);
 	}
 
