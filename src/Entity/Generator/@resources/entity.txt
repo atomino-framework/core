@@ -3,7 +3,7 @@
 use Atomino\Entity\Attributes\Modelify;
 use {{shadow-namespace}}\_{{name}};
 
-#[Modelify(\Application\Database\Default::class, '{{table}}', true)]
+#[Modelify(\Application\Database\DefaultConnection::class, '{{table}}', true)]
 class {{name}} extends _{{name}}{
 
 }
