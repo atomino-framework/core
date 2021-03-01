@@ -1,18 +1,22 @@
-<?php namespace Atomino\Core\Environment;
+<?php namespace Atomino\Core;
 
 use Composer\Autoload\ClassLoader;
 
-class Environment implements EnvironmentInterface{
+class Environment{
 	const CONTEXT_WEB = 'web';
 	const CONTEXT_CLI = 'cli';
 	const MODE_DEV = 'dev';
 	const MODE_PROD = 'prod';
+
+	private static null|Environment $instance = null;
 
 	private string $root;
 	private string $context;
 	private string $mode;
 
 	public function __construct( string $root, private ClassLoader $classLoader){
+		if(!is_null(static::$instance)) throw new \Exception('Only one '.self::class.' instance allowed!');
+		static::$instance = $this;
 		$this->root = realpath($root) . '/';
 		$this->context = ( http_response_code() ? static::CONTEXT_WEB : self::CONTEXT_CLI );
 		$this->mode = file_exists($this->root . '.devmode') ? self::MODE_DEV : self::MODE_PROD;

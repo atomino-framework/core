@@ -1,6 +1,7 @@
 <?php namespace Atomino\Routing;
 
 use Atomino\Core\Application;
+use Atomino\Core\Runner\HttpRunnerInterface;
 use Atomino\Routing\Interfaces\MiddlewareInterface;
 use Atomino\Routing\Interfaces\ResponderInterface;
 use Atomino\Routing\Pipeline\BreakPipelineException;
@@ -25,6 +26,17 @@ class Pipeline{
 		}
 		$this->pipeline[] = ['class' => $class, 'args' => $args];
 		return $this;
+	}
+	public function test(callable $test): static|null { return $test() === true ? $this : null; }
+
+	public function pass(HttpRunnerInterface|string|callable $runner): void {
+		if (is_callable($runner)) {
+			$runner();
+		} else {
+			if (is_string($runner)) $runner = Application::DIC()->get($runner);
+			if (!$runner instanceof HttpRunnerInterface) throw new \InvalidArgumentException();
+			$runner->run();
+		}
 	}
 
 	public function exec(string|array|null $class = null, $args = []): void{

@@ -22,12 +22,12 @@ class Finder extends \Atomino\Database\Finder{
 	}
 
 	/** @return Entity[] */
-	public function page(int $size, int $page = 1, int|bool $count = false): array{
+	public function page(int $size, int $page = 1, int|bool|null &$count = false): array{
 		return $this->collect($size, $size * ( $page - 1 ), $count);
 	}
 
 	/** @return Entity[] */
-	public function collect(?int $limit = null, ?int $offset = null, int|bool &$count = false): array{
+	public function collect(?int $limit = null, ?int $offset = null, int|bool|null &$count = false): array{
 		$items = [];
 
 		$records = parent::records($limit, $offset, $count);

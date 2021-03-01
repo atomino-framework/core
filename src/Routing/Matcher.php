@@ -4,28 +4,25 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Matcher{
 	public function __invoke(?string $pattern, ?string $subject, $separator, ParameterBag $params): bool{
-		$pattern = trim($pattern, '/');
-		$subject = trim($subject, '/');
+		$pattern = trim($pattern, $separator);
+		$subject = trim($subject, $separator);
 		$segments = explode($separator, $pattern);
-		//var_dump('- - - - - - -');
-		//var_dump($pattern);
 
-		if (!str_ends_with($pattern, '**') && !str_contains($pattern, '/:?') && count($segments) !== count(explode($separator, $subject))) return false;
+		if (!str_ends_with($pattern, '**') && !str_contains($pattern, $separator.':?') && count($segments) !== count(explode($separator, $subject))) return false;
 
-		$segments = array_map(function ($segment){
-			if ($segment === '**') return "?(?<__REST>(/.*|.{0}))";
+		$segments = array_map(function ($segment) use($separator){
+			if ($segment === '**') return "?(?<__REST>(".preg_quote($separator).".*|.{0}))";
 			if ($segment === '*') return '.+?';
 			if (preg_match('/^:(?<optional>\??)(?<name>(.*?))(\((?<pattern>.*?)\))?$/', $segment, $matches)){
 				$pattern = ( array_key_exists('pattern', $matches) && strlen($matches['pattern']) ) ? $matches['pattern'] : '.+?';
 				$pattern = ( array_key_exists('name', $matches) && strlen($matches['name']) ) ? "(?'" . $matches['name'] . "'" . $pattern . ")" : $pattern;
-				if ($matches['optional']) $pattern = '?(/' . $pattern . '|.{0})';
+				if ($matches['optional']) $pattern = '?('.preg_quote($separator). $pattern . '|.{0})';
 				return $pattern;
 			}
 			return $segment;
 		}, $segments);
 
-		$pattern = '%^' . join($separator, $segments) . "(?'_ERROR_'/.*?)?" . '$%';
-		//var_dump($pattern);
+		$pattern = '%^' . join(preg_quote($separator), $segments) . "(?'_ERROR_'/.*?)?" . '$%';
 
 		if (preg_match($pattern, $subject, $result)){
 			if (array_key_exists('_ERROR_', $result)) return false;
