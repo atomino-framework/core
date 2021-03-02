@@ -14,7 +14,7 @@ class Environment{
 	private string $context;
 	private string $mode;
 
-	public function __construct( string $root, private ClassLoader $classLoader){
+	public function __construct( string $root ){
 		if(!is_null(static::$instance)) throw new \Exception('Only one '.self::class.' instance allowed!');
 		static::$instance = $this;
 		$this->root = realpath($root) . '/';
@@ -26,7 +26,6 @@ class Environment{
 	public function isWeb(): bool{ return $this->context === self::CONTEXT_WEB; }
 	public function isDev(): bool{ return $this->mode === self::MODE_DEV; }
 	public function isProd(): bool{ return $this->mode === self::MODE_PROD; }
-	public function getClassLoader(): ClassLoader{return $this->classLoader;}
 
 }
 

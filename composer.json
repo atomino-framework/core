@@ -29,6 +29,9 @@
     "autoload": {
         "psr-4": {
             "Atomino\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     }
 }

@@ -30,7 +30,7 @@ class Generator{
 	private string $finderPath;
 
 	public function __construct(private string $namespace, private Style $style){
-		$this->classLoader = Application::ENV()->getClassLoader();
+		$this->classLoader = Application::DIC()->get(ClassLoader::class);
 		$this->codeFinder = new CodeFinder($this->classLoader);
 		$this->encoder = new PHPEncoder();
 		$this->entityPath = substr(realpath($this->codeFinder->Psr4ResolveNamespace($this->namespace)), strlen(Application::ENV()->getRoot()));
