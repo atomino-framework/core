@@ -28,7 +28,7 @@ abstract class Responder implements ResponderInterface{
 	protected function getArgsBag(): ParameterBag{ return $this->argsBag; }
 	protected function getAttributesBag(): ParameterBag{ return $this->request->attributes; }
 	protected function getFilesBag(): FileBag{ return $this->request->files; }
-	protected function getRequestBag(): InputBag{ return $this->request->request; }
+	protected function getRequestBag(): ParameterBag{ return $this->request->request; }
 	protected function getQueryBag(): InputBag{ return $this->request->query; }
 	protected function getCookiesBag(): InputBag{ return $this->request->cookies; }
 	protected function getHeaderBag(): HeaderBag{ return $this->request->headers; }

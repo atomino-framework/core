@@ -24,6 +24,8 @@ class Matcher{
 
 		$pattern = '%^' . join(preg_quote($separator), $segments) . "(?'_ERROR_'/.*?)?" . '$%';
 
+
+
 		if (preg_match($pattern, $subject, $result)){
 			if (array_key_exists('_ERROR_', $result)) return false;
 			$result = array_filter($result, function ($key){ return !is_numeric($key); }, ARRAY_FILTER_USE_KEY);
