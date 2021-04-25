@@ -16,5 +16,11 @@ if (!function_exists('Atomino\cfg')) {
 }
 
 if (!function_exists('Atomino\settings')) {
-	function settings(string|null $key = null): mixed { return Application::cfg("settings.".$key); }
+	function settings(string|null $key = null): mixed { return Application::cfg("settings." . $key); }
+}
+
+if (!function_exists('Atomino\inject')) {
+	function inject(object $object, string $property, mixed $value) {
+		\Closure::bind(function ($property, $value) { $this->$property = $value; }, $object, get_class($object))($property, $value);
+	}
 }

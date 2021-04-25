@@ -33,7 +33,6 @@ class Field{
 			'TIME' => new TimeField($descriptor),
 			default => new static($descriptor)
 		};
-
 		return $field;
 	}
 
