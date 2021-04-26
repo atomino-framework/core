@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Mime\MimeTypes;
 
 class FileServer extends Handler {
-	public function handle(Request $request): Response {
+	public function handle(Request $request): Response|null {
 
 		$file = $request->attributes->get('file');
-		if (!file_exists($file)) return new Response(null, 404);
+		if (!file_exists($file)) return null;
 
 		BinaryFileResponse::trustXSendfileTypeHeader();
 		$file = new File($file);

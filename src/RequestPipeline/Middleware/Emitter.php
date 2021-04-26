@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Emitter extends Handler {
 	public function handle(Request $request): Response|null {
 		$response = $this->next($request);
-		if (is_null($response))  $response = new Response("404 Not found", 404);
+		if (is_null($response))  $response = new Response(null, 404);
 		$response->send();
 		return $response;
 	}

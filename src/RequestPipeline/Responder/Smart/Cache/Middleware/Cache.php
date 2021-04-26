@@ -1,7 +1,7 @@
 <?php namespace Atomino\RequestPipeline\Responder\Smart\Cache\Middleware;
 
 use Atomino\Core\Application;
-use Atomino\Molecules\Cache\CacheInterface;
+use Atomino\RequestPipeline\Responder\Smart\Cache\CacheInterface;
 use Atomino\RequestPipeline\Responder\Smart\Cache\Event;
 use Atomino\RequestPipeline\Pipeline\Handler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -22,9 +22,9 @@ class Cache extends Handler{
 	public function handle(Request $request): Response{
 		$this->eventDispatcher->addListener(Event::request, function (Event $event){ $this->cacheRequest = $event->interval; });
 		return $this->storage->get(
-			crc32($this->getRequest()->getRequestUri()),
-			function (ItemInterface $item): Response{
-				$response = $this->next($response);
+			crc32($request->getRequestUri()),
+			function (ItemInterface $item) use ($request): Response{
+				$response = $this->next($request);
 				$item->expiresAfter($this->cacheRequest);
 				return $response;
 			}

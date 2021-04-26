@@ -8,16 +8,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ErrorHandler extends Handler {
-	public function __construct(private Logger $logger){ }
+	public function __construct(private Logger $logger) { }
 
-	#[Pure] static public function setup($errorUrl = '/error'){ return parent::args(get_defined_vars()); }
+	#[Pure] static public function setup(Handler $nullHandler, array $statusHandlers = []) { return parent::args(get_defined_vars()); }
 
-	public function handle(Request $request): Response{
-		try{
-			$response = $this->next($request);
-		}catch (\Throwable $exception){
-			$this->logger->error($exception->getMessage(), [$request->getMethod().' '.$request->getSchemeAndHttpHost().$request->getPathInfo().(($q = $request->getQueryString())?"?".$q:'')]);
-			return new RedirectResponse($this->arguments->getAlnum('errorUrl', '/error'));
+	public function handle(Request $request): Response {
+		$response = $this->next($request);
+		$handler = null;
+		if (is_null($response)) {
+			/** @var Handler $handler */
+			$handler = $this->arguments->get('nullHandler');
+		} elseif ($response->getStatusCode() !== 200) {
+			if (array_key_exists($response->getStatusCode(), $this->arguments->get('statusHandlers'))) {
+				/** @var Handler $handler */
+				$handler = $this->arguments->get('statusHandlers')[$response->getStatusCode()];
+			}
+		}
+		if (!is_null($handler)) {
+			$this->logger->error("Error " . $response->getStatusCode(), [$request->getMethod() . ' ' . $request->getSchemeAndHttpHost() . $request->getPathInfo() . (($q = $request->getQueryString()) ? "?" . $q : '')]);
+			$response = $handler->handle($request);
 		}
 		return $response;
 	}
