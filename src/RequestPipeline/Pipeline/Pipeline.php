@@ -41,17 +41,3 @@ class Pipeline extends Handler implements Nextable {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
