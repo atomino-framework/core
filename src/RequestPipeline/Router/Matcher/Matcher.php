@@ -9,23 +9,28 @@ abstract class Matcher {
 	public function isMatches(): bool { return $this->matches; }
 
 	public function parse(?string $pattern, string $separator): void {
+
 		$segments = explode($separator, trim($pattern, $separator));
 		if ($rest = end($segments) == '**') array_pop($segments);
 
-		$segments = array_map(
-			function ($segment) use ($separator) {
-				if ($segment === '*') return '[^/]+';
-				elseif (preg_match('/^:(?<optional>\??)(?<name>(.*?))(\((?<pattern>.*?)\))?$/', $segment, $matches)) {
-					$pattern = (array_key_exists('pattern', $matches) && strlen($matches['pattern'])) ? $matches['pattern'] : '[^/]+';
-					if (array_key_exists('name', $matches) && strlen($matches['name'])) $pattern = "(?'" . $matches['name'] . "'" . $pattern . ")";
-					if ($matches['optional']) $pattern = '?(' . preg_quote($separator) . $pattern . '|.{0})';
-					return $pattern;
-				} else return $segment;
-			},
-			$segments
-		);
+		if (count($segments) === 0 && $rest) {
+			$this->regex = "%^(?'__REST__'.*)$%";
+		} else {
+			$segments = array_map(
+				function ($segment) use ($separator) {
+					if ($segment === '*') return '[^/]+';
+					elseif (preg_match('/^:(?<optional>\??)(?<name>(.*?))(\((?<pattern>.*?)\))?$/', $segment, $matches)) {
+						$pattern = (array_key_exists('pattern', $matches) && strlen($matches['pattern'])) ? $matches['pattern'] : '[^/]+';
+						if (array_key_exists('name', $matches) && strlen($matches['name'])) $pattern = "(?'" . $matches['name'] . "'" . $pattern . ")";
+						if ($matches['optional']) $pattern = '?(' . preg_quote($separator) . $pattern . '|.{0})';
+						return $pattern;
+					} else return $segment;
+				},
+				$segments
+			);
+			$this->regex = '%^' . join(preg_quote($separator), $segments) . ($rest ? "?(?'__REST__'" . preg_quote($separator) . ".*|.{0})" : "/{0}") . '$%';
+		}
 
-		$this->regex = '%^' . join(preg_quote($separator), $segments) . ($rest ? "?(?'__REST__'" . preg_quote($separator) . ".*|.{0})" : "/{0}") . '$%';
 		$this->rest = $rest;
 	}
 

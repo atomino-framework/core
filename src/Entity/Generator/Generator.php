@@ -47,6 +47,10 @@ class Generator {
 			"{{entity-namespace}}" => $this->namespace,
 			"{{shadow-namespace}}" => static::ATOM_SHADOW_ENTITY_NS,
 			"{{finder-namespace}}" => static::ATOM_ENTITY_FINDER_NS,
+			"#:code"               => '',
+			"#:annotation"         => '',
+			"#:attribute"          => '',
+			"{{interface}}"        => '',
 		];
 
 		$files = [

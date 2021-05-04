@@ -11,7 +11,7 @@ use Atomino\Entity\Attributes\RequiredField;
 
 
 /**
- * @method static \Atomino\Atoms\EntityFinder\_User search( Filter $filter = null )
+ * @method static \Atomino\Atoms\EntityFinder\_{{name}} search( Filter $filter = null )
 #:annotation
  */
 #[RequiredField('id', \Atomino\Entity\Field\IntField::class)]

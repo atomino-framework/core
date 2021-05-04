@@ -19,6 +19,13 @@ class Pipeline extends Handler implements Nextable {
 
 	protected function build() { }
 
+	public function add(...$segments){
+		foreach ($segments as $segment){
+			$this->pipe(...$segment);
+		}
+		return $this;
+	}
+
 	public function pipe($handler, array|null $arguments = null): static {
 		$this->push(new Segment($handler, $arguments, $this));
 		return $this;
