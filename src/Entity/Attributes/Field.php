@@ -8,6 +8,6 @@ class Field extends Attr{
 	public function __construct(
 		public string $field,
 		public string $fieldClass,
-		... $arguments
+		public mixed $attributes = null
 	){}
 }

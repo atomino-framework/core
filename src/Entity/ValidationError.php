@@ -5,10 +5,7 @@ use JetBrains\PhpStorm\Pure;
 
 class ValidationError extends \Exception {
 
-	private $errors = [];
-
-	#[Pure] public function __construct($errors){
-		$this->errors = $errors;
+	#[Pure] public function __construct(private array $errors){
 		parent::__construct("Validation error");
 	}
 

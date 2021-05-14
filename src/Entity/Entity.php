@@ -69,7 +69,14 @@ abstract class Entity implements \JsonSerializable{
 
 	public function save(): int|null{
 		if (static::model()->isMutable()){
-			return is_null($this->id) ? $this->insert() : $this->update();
+			try {
+				return is_null($this->id) ? $this->insert() : $this->update();
+			}catch (\PDOException $exception){
+				if(false !== preg_match("/SQLSTATE\[23000]: Integrity constraint violation: 1062 Duplicate entry .*? for key '.*?\.(.*?)'/", $exception->getMessage(), $matches)){
+					throw new ValidationError([["field"=>$matches[1], "message"=>"Duplicate entry"]]);
+				}
+				throw $exception;
+			}
 		}
 		return null;
 	}

@@ -50,7 +50,6 @@ class Model{
 
 		$this->setVirtuals($ENTITY);
 		$this->setRelations($ENTITY);
-//		$this->fetchPluginData($ENTITY);
 		$this->setPlugins($ENTITY);
 		$this->setValidators($ENTITY);
 
@@ -95,7 +94,7 @@ class Model{
 			}else $allowInsert = $allowUpdate = true;
 
 			/** @var \Atomino\Entity\Field\Field $field */
-			$field = new ( $FIELD->fieldClass )($fieldName, $get, $set, $allowInsert, $allowUpdate);
+			$field = new ( $FIELD->fieldClass )($fieldName, $get, $set, $allowInsert, $allowUpdate, $FIELD->attributes);
 			if ($field->isProtected()){
 				if (!is_null($getter = $field->getGetter())) $this->getters[$fieldName] = $getter;
 				if (!is_null($setter = $field->getSetter())) $this->setters[$fieldName] = $setter;
@@ -119,14 +118,6 @@ class Model{
 			$this->plugins[$Plugin->getName()] = $Plugin->newInstance();
 		}
 	}
-
-//	private function fetchPluginData(\ReflectionClass $ENTITY){
-//		$Attributes = $ENTITY->getAttributes(PluginAttributeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
-//		foreach ($Attributes as $Attribute){
-//			if (!array_key_exists($Attribute->getName(), $this->pluginData)) $this->pluginData[$Attribute->getName()] = [];
-//			$this->pluginData[$Attribute->getName()][] = $Attribute->newInstance();
-//		}
-//	}
 
 	private function setValidators(\ReflectionClass $ENTITY){
 		$this->validators = new ValidatorSet();
