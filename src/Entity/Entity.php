@@ -21,7 +21,7 @@ abstract class Entity implements \JsonSerializable{
 
 	protected int|null $id = null;
 
-	private function handleEvent(string $event, mixed $data = null): bool{
+	protected function handleEvent(string $event, mixed $data = null): bool{
 		$result = true;
 		foreach (static::model()->getEventHandlers($event) as $eventHandler){
 			$result = ( $this->$eventHandler ($event, $data) !== false ) && $result;
