@@ -36,7 +36,7 @@ class Model{
 	/** @var Relation[] */
 	private array $relations = [];
 //	private array $pluginData = [];
-	/** @var \Atomino\Entity\Plugin\Plugin[] */
+	/** @var \Atomino\Entity\Plugin\Plugin[][] */
 	private array $plugins = [];
 	private \ReflectionClass $entityReflection;
 
@@ -115,7 +115,8 @@ class Model{
 
 	private function setPlugins(\ReflectionClass $ENTITY){
 		foreach ($ENTITY->getAttributes(Plugin::class, \ReflectionAttribute::IS_INSTANCEOF) as $Plugin){
-			$this->plugins[$Plugin->getName()] = $Plugin->newInstance();
+			if(!array_key_exists($Plugin->getName(), $this->plugins)) $this->plugins[$Plugin->getName()] = [];
+			$this->plugins[$Plugin->getName()][] = $Plugin->newInstance();
 		}
 	}
 
@@ -170,7 +171,11 @@ class Model{
 	 */
 	#[Pure] public function getEventHandlers($event): array{ return array_key_exists($event, $this->eventHandlers) ? $this->eventHandlers[$event] : []; }
 	//public function getPluginData(string $name): array{ return array_key_exists($name, $this->pluginData) ? $this->pluginData[$name] : []; }
-	#[Pure] public function getPlugin(string $name): Plugin|null{ return array_key_exists($name, $this->plugins) ? $this->plugins[$name] : []; }
+	/**
+	 * @param string $name
+	 * @return Plugin[]
+	 */
+	#[Pure] public function getPlugin(string $name):array{ return array_key_exists($name, $this->plugins) ? $this->plugins[$name] : []; }
 
 	public function getEntityReflection(): \ReflectionClass{ return $this->entityReflection; }
 
