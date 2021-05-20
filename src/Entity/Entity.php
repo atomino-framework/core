@@ -9,7 +9,7 @@ class_alias(CacheInterface::class, \Atomino\Entity\Cache::class);
 /**
  * @property-read int|null $id
  */
-abstract class Entity implements \JsonSerializable{
+abstract class Entity implements \JsonSerializable, EntityInterface {
 
 	const EVENT_BEFORE_UPDATE = "EVENT_BEFORE_UPDATE";
 	const EVENT_ON_UPDATE = "EVENT_ON_UPDATE";
@@ -176,7 +176,7 @@ abstract class Entity implements \JsonSerializable{
 		return $this->export();
 	}
 
-	static public function search(null|Filter $filter): Finder{
+	static public function search(null|Filter $filter = null): Finder{
 		return static::model()->getRepository()->search($filter);
 	}
 

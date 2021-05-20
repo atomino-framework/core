@@ -21,6 +21,11 @@ class Finder extends \Atomino\Database\Finder{
 		return array_pop($items);
 	}
 
+	public function count():int{
+		$this->select("count(*) as `count`");
+		return parent::record()['count'];
+	}
+
 	/** @return Entity[] */
 	public function page(int $size, int $page = 1, int|bool|null &$count = false): array{
 		return $this->collect($size, $size * ( $page - 1 ), $count);
