@@ -11,6 +11,25 @@ if (!function_exists('Atomino\dic')) {
 	function dic(): \DI\Container { return Application::DIC(); }
 }
 
+if (!function_exists('Atomino\readini')) {
+	function readini($file): array {
+		$array = [];
+		$ini = parse_ini_file($file, false, INI_SCANNER_TYPED);
+
+		array_walk($ini, function ($value, $key) use (&$array) {
+			$keys = explode('.', $key);
+			while (count($keys) > 1) {
+				$key = array_shift($keys);
+				if (!isset($array[$key]) || !is_array($array[$key])) $array[$key] = [];
+				$array = &$array[$key];
+			}
+			$array[array_shift($keys)] = $value;
+		});
+		return $array;
+	}
+}
+
+
 if (!function_exists('Atomino\cfg')) {
 	function cfg(string|null $key = null): mixed { return Application::cfg($key); }
 }
