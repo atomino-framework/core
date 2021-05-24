@@ -1,7 +1,6 @@
 <?php namespace Atomino\Database\Descriptor\Field;
 
-class Field{
-
+class Field {
 	protected string $name;
 	protected ?string $default;
 	protected bool $nullable;
@@ -16,13 +15,13 @@ class Field{
 	protected bool $autoInsert = false;
 	protected bool $autoUpdate = false;
 
-	static function create($descriptor): static|null{
-		$dataType = strtoupper($descriptor["DATA_TYPE"]);
-		$field = null;
-
-		$field = match ( $dataType ) {
+	static function create($descriptor): static|null {
+		return match (strtoupper($descriptor["DATA_TYPE"])) {
 			'INTEGER', 'INT', 'SMALLINT', 'TINYINT', 'MEDIUMINT', 'BIGINT' => new IntegerField($descriptor),
-			'CHAR', 'VARCHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT' => new StringField($descriptor),
+			'CHAR', 'VARCHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT' => new StringField($descriptor),
+            'LONGTEXT' => $descriptor["COLUMN_COMMENT"] === 'json'
+                ? new JsonField($descriptor)
+                : new StringField($descriptor),
 			'DOUBLE', 'FLOAT' => new FloatField($descriptor),
 			'ENUM' => new EnumField($descriptor),
 			'SET' => new SetField($descriptor),
@@ -33,7 +32,6 @@ class Field{
 			'TIME' => new TimeField($descriptor),
 			default => new static($descriptor)
 		};
-		return $field;
 	}
 
 	protected function __construct(array $descriptor){
@@ -62,5 +60,4 @@ class Field{
 	public function isAutoIncrement(): bool{ return $this->autoIncrement; }
 	public function isAutoInsert(): bool{ return $this->autoInsert || $this->autoIncrement || $this->virtual; }
 	public function isAutoUpdate(): bool{ return $this->autoUpdate || $this->autoIncrement || $this->virtual; }
-
 }
