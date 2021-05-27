@@ -14,6 +14,7 @@ if (!function_exists('Atomino\dic')) {
 if (!function_exists('Atomino\readini')) {
 	function readini($file): array {
 		$array = [];
+		if (!file_exists($file)) return [];
 		$ini = parse_ini_file($file, false, INI_SCANNER_TYPED);
 
 		array_walk($ini, function ($value, $key) use (&$array) {
