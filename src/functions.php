@@ -3,12 +3,21 @@
 use Atomino\Core\Application;
 
 if (!function_exists('Atomino\path')) {
-	if (!getenv('ROOT')) putenv("ROOT=" . realpath(__DIR__ . '/../../../..'));
-	function path(string $path = ''): string { return getenv("ROOT") . '/' . ltrim($path, '/'); }
+	if (!getenv('@root')) putenv("@root=" . realpath(__DIR__ . '/../../../..'));
+	function path(string $path = ''): string { return getenv("@root") . '/' . ltrim($path, '/'); }
 }
 
 if (!function_exists('Atomino\dic')) {
 	function dic(): \DI\Container { return Application::DIC(); }
+}
+
+if (!function_exists('Atomino\readini')) {
+	function loadenv($file){
+		if (file_exists($file)){
+			$env = parse_ini_file($file, false, INI_SCANNER_TYPED);
+			foreach ($env as $key=>$value) putenv($key."=".$value);
+		}
+	}
 }
 
 if (!function_exists('Atomino\readini')) {
