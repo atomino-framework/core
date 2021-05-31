@@ -2,10 +2,12 @@
 
 use Atomino\Core\Runner\CliRunnerInterface;
 use Atomino\Core\Runner\HttpRunnerInterface;
+use Atomino\Debug\ErrorHandler;
 use Composer\Autoload\ClassLoader;
 use DI\Container;
 use DI\ContainerBuilder;
 use mysql_xdevapi\Exception;
+use function Atomino\dic;
 use function Atomino\path;
 
 
@@ -21,7 +23,7 @@ class Application {
 
 	public final function __construct(array $config, array $di) {
 
-		static::$context = ( http_response_code() ? static::CONTEXT_WEB : self::CONTEXT_CLI );
+		static::$context = (http_response_code() ? static::CONTEXT_WEB : self::CONTEXT_CLI);
 
 		// Set Application instance
 		if (!is_null(static::$instance)) throw new \Exception('Only one ' . self::class . ' instance allowed!');
@@ -36,14 +38,17 @@ class Application {
 		$builder->addDefinitions($di);
 		static::$DIC = $builder->build();
 
+		// Setup Error Handler
+		if (static::$DIC->has(BootInterface::class)) static::$DIC->get(BootInterface::class)->boot();
+
 		// Start runner
 		if (static::isWeb()) static::DIC()->get(HttpRunnerInterface::class)->run();
 		if (static::isCli()) static::DIC()->get(CliRunnerInterface::class)->run();
 	}
 
 	public static function DIC(): Container { return static::$DIC; }
-	public static function isCli(): bool{ return self::$context === self::CONTEXT_CLI; }
-	public static function isWeb(): bool{ return self::$context === self::CONTEXT_WEB; }
+	public static function isCli(): bool { return self::$context === self::CONTEXT_CLI; }
+	public static function isWeb(): bool { return self::$context === self::CONTEXT_WEB; }
 
 	public static function cfg(string|null $key = null): mixed {
 		if (is_null($key)) return static::$cfg;

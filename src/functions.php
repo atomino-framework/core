@@ -1,6 +1,8 @@
 <?php namespace Atomino;
 
 use Atomino\Core\Application;
+use Atomino\Debug\Debug;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 if (!function_exists('Atomino\path')) {
 	if (!getenv('@root')) putenv("@root=" . realpath(__DIR__ . '/../../../..'));
@@ -12,10 +14,10 @@ if (!function_exists('Atomino\dic')) {
 }
 
 if (!function_exists('Atomino\readini')) {
-	function loadenv($file){
-		if (file_exists($file)){
+	function loadenv($file) {
+		if (file_exists($file)) {
 			$env = parse_ini_file($file, false, INI_SCANNER_TYPED);
-			foreach ($env as $key=>$value) putenv($key."=".$value);
+			foreach ($env as $key => $value) putenv($key . "=" . $value);
 		}
 	}
 }
@@ -39,7 +41,6 @@ if (!function_exists('Atomino\readini')) {
 	}
 }
 
-
 if (!function_exists('Atomino\cfg')) {
 	function cfg(string|null $key = null): mixed { return Application::cfg($key); }
 }
@@ -52,4 +53,12 @@ if (!function_exists('Atomino\inject')) {
 	function inject(object $object, string $property, mixed $value) {
 		\Closure::bind(function ($property, $value) { $this->$property = $value; }, $object, get_class($object))($property, $value);
 	}
+}
+
+if (!function_exists('Atomino\debug')) {
+	function debug(mixed $data, string $channel = Debug::DEBUG_DUMP) { dic()->has(Debug::class) && dic()->get(Debug::class)?->handle($data, $channel); }
+}
+
+if (!function_exists('Atomino\alert')) {
+	function alert(mixed $data) { \Atomino\debug($data, Debug::DEBUG_ALERT); }
 }
