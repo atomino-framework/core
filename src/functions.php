@@ -6,7 +6,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 if (!function_exists('Atomino\path')) {
 	if (!getenv('@root')) putenv("@root=" . realpath(__DIR__ . '/../../../..'));
-	function path(string $path = ''): string { return getenv("@root") . '/' . ltrim($path, '/'); }
+	function path(string $path = ''): string { return rtrim(getenv("@root"),'/') . '/' . ltrim($path, '/'); }
 }
 
 if (!function_exists('Atomino\dic')) {
@@ -29,6 +29,10 @@ if (!function_exists('Atomino\readini')) {
 		$ini = parse_ini_file($file, false, INI_SCANNER_TYPED);
 
 		array_walk($ini, function ($value, $key) use (&$array) {
+			if(str_ends_with($key,':path')){
+				$value = path($value);
+				$key = substr($key, 0, -5);
+			}
 			$keys = explode('.', $key);
 			while (count($keys) > 1) {
 				$key = array_shift($keys);
