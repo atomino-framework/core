@@ -14,6 +14,7 @@ class Publish extends CliModule {
 		return (new class() extends CliCommand {
 			protected function exec(mixed $config) {
 				$this->style->_task("Clean up");
+				if(!is_dir(cfg("publish.public"))) mkdir(cfg("publish.public"), 0777, true);
 				$di = new \RecursiveDirectoryIterator(cfg("publish.public"), \FilesystemIterator::SKIP_DOTS);
 				$ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
 				foreach ($ri as $file) $file->isDir() ? rmdir($file) : unlink($file);

@@ -13,7 +13,7 @@ if (!function_exists('Atomino\dic')) {
 	function dic(): \DI\Container { return Application::DIC(); }
 }
 
-if (!function_exists('Atomino\readini')) {
+if (!function_exists('Atomino\readenv')) {
 	function loadenv($file) {
 		if (file_exists($file)) {
 			$env = parse_ini_file($file, false, INI_SCANNER_TYPED);
