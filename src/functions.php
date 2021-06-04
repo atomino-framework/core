@@ -60,7 +60,7 @@ if (!function_exists('Atomino\inject')) {
 }
 
 if (!function_exists('Atomino\debug')) {
-	function debug(mixed $data, string $channel = Debug::DEBUG_DUMP) { dic()->has(Debug::class) && dic()->get(Debug::class)?->handle($data, $channel); }
+	function debug(mixed $data, string $channel = Debug::DEBUG_DUMP) { dic()->has(Debug::class) && dic()->get(Debug::class)->handle($data, $channel); }
 }
 
 if (!function_exists('Atomino\alert')) {
