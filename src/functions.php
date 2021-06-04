@@ -10,7 +10,7 @@ if (!function_exists('Atomino\path')) {
 }
 
 if (!function_exists('Atomino\dic')) {
-	function dic(): \DI\Container { return Application::DIC(); }
+	function dic(): \DI\Container { return Application::getDIContainer(); }
 }
 
 if (!function_exists('Atomino\readenv')) {
@@ -46,11 +46,11 @@ if (!function_exists('Atomino\readini')) {
 }
 
 if (!function_exists('Atomino\cfg')) {
-	function cfg(string|null $key = null): mixed { return Application::cfg($key); }
+	function cfg(string|null $key = null): mixed { return Application::getConfig($key); }
 }
 
 if (!function_exists('Atomino\settings')) {
-	function settings(string|null $key = null): mixed { return Application::cfg("settings." . $key); }
+	function settings(string|null $key = null): mixed { return Application::getConfig("settings." . $key); }
 }
 
 if (!function_exists('Atomino\inject')) {

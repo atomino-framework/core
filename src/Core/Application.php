@@ -2,61 +2,43 @@
 
 use Atomino\Core\Runner\CliRunnerInterface;
 use Atomino\Core\Runner\HttpRunnerInterface;
-use Atomino\Debug\ErrorHandler;
-use Composer\Autoload\ClassLoader;
 use DI\Container;
 use DI\ContainerBuilder;
-use mysql_xdevapi\Exception;
-use function Atomino\dic;
-use function Atomino\path;
 
 
 class Application {
 
-	private static Container $DIC;
-	private static array $cfg;
-	private static null|Application $instance = null;
-	private static int $context;
+	private static Container $diContainer;
+	private static array $config;
 
-	const CONTEXT_CLI = 1;
-	const CONTEXT_WEB = 2;
+	public static function setConfig(array $config) {
+		if (isset(static::$config)) throw new \Exception("Atomino config, has been set already");
+		static::$config = $config;
+	}
 
-	public final function __construct(array $config, array $di) {
-
-		static::$context = (http_response_code() ? static::CONTEXT_WEB : self::CONTEXT_CLI);
-
-		// Set Application instance
-		if (!is_null(static::$instance)) throw new \Exception('Only one ' . self::class . ' instance allowed!');
-		static::$instance = $this;
-
-		// Load config
-		static::$cfg = $config;
-
-		// Build DI Container
+	public static function setDI(array $di) {
+		if (is_null(static::$config)) throw new \Exception("Atomino config, has not been set");
+		if (isset(static::$diContainer)) throw new \Exception("Atomino DI, has been set already");
 		$builder = new ContainerBuilder();
 		$builder->useAutowiring(true);
 		$builder->addDefinitions($di);
-		static::$DIC = $builder->build();
-
-		// Setup Error Handler
-		if (static::$DIC->has(BootInterface::class)) static::$DIC->get(BootInterface::class)->boot();
-
-		// Start runner
-		if (static::isWeb()) static::DIC()->get(HttpRunnerInterface::class)->run();
-		if (static::isCli()) static::DIC()->get(CliRunnerInterface::class)->run();
+		static::$diContainer = $builder->build();
 	}
 
-	public static function DIC(): Container { return static::$DIC; }
-	public static function isCli(): bool { return self::$context === self::CONTEXT_CLI; }
-	public static function isWeb(): bool { return self::$context === self::CONTEXT_WEB; }
+	public static function boot() {
+		if (is_null(static::$diContainer)) throw new \Exception("Atomino DI, has not been set");
+		if (static::$diContainer->has(BootInterface::class)) static::$diContainer->get(BootInterface::class)->boot();
+		static::$diContainer->get(http_response_code() ? HttpRunnerInterface::class : CliRunnerInterface::class)->run();
+	}
 
-	public static function cfg(string|null $key = null): mixed {
-		if (is_null($key)) return static::$cfg;
+	public static function getDIContainer(): Container { return static::$diContainer; }
+
+	public static function getConfig(string|null $key = null): mixed {
+		if (is_null($key)) return static::$config;
 		$keys = explode('.', $key);
-		$cfg = static::$cfg;
+		$cfg = static::$config;
 		foreach ($keys as $key) $cfg = $cfg[$key];
 		return $cfg;
 	}
-
 
 }
