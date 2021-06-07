@@ -14,7 +14,7 @@ if (!function_exists('Atomino\dic')) {
 }
 
 if (!function_exists('Atomino\readenv')) {
-	function loadenv($file) {
+	function loadenv(string $file) {
 		if (file_exists($file)) {
 			$env = parse_ini_file($file, false, INI_SCANNER_TYPED);
 			foreach ($env as $key => $value) putenv($key . "=" . $value);
@@ -23,7 +23,7 @@ if (!function_exists('Atomino\readenv')) {
 }
 
 if (!function_exists('Atomino\readini')) {
-	function readini($file): array {
+	function readini(string $file): array {
 		$array = [];
 		if (!file_exists($file)) return [];
 		$ini = parse_ini_file($file, false, INI_SCANNER_TYPED);
