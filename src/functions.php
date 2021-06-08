@@ -45,6 +45,12 @@ if (!function_exists('Atomino\readini')) {
 	}
 }
 
+function loadcfgset(array|string ...$files) {
+	$data = [];
+	foreach ($files as $file) $data[] = substr($file, -3) === 'php' ? include $file : \Atomino\readini($file);
+	return array_replace_recursive(...$data);
+}
+
 if (!function_exists('Atomino\cfg')) {
 	function cfg(string|null $key = null): mixed { return Application::getConfig($key); }
 }
