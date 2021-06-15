@@ -1,4 +1,4 @@
-<?php namespace Atomino\Cli\Attributes;
+<?php namespace Atomino\Core\Cli\Attributes;
 
 use Atomino\Neutrons\Attr;
 use Attribute;

@@ -1,4 +1,4 @@
-<?php namespace Atomino\Cli\Exceptions;
+<?php namespace Atomino\Core\Cli\Exceptions;
 
 use Exception;
 

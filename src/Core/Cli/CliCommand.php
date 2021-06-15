@@ -1,6 +1,6 @@
-<?php namespace Atomino\Cli;
+<?php namespace Atomino\Core\Cli;
 
-use Atomino\Cli\Exceptions\Error;
+use Atomino\Core\Cli\Exceptions\Error;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

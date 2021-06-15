@@ -1,7 +1,7 @@
 <?php namespace Atomino;
 
 use Atomino\Core\Application;
-use Atomino\Debug\Debug;
+use Atomino\Core\Debug\DebugHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 if (!function_exists('Atomino\path')) {
@@ -17,7 +17,13 @@ if (!function_exists('Atomino\readenv')) {
 	function loadenv(string $file) {
 		if (file_exists($file)) {
 			$env = parse_ini_file($file, false, INI_SCANNER_TYPED);
-			foreach ($env as $key => $value) putenv($key . "=" . $value);
+			foreach ($env as $key => $value){
+				if(str_ends_with($key,' path')){
+					$value = path($value);
+					$key = substr($key, 0, -5);
+				}
+				putenv($key . "=" . $value);
+			}
 		}
 	}
 }
@@ -29,7 +35,7 @@ if (!function_exists('Atomino\readini')) {
 		$ini = parse_ini_file($file, false, INI_SCANNER_TYPED);
 
 		array_walk($ini, function ($value, $key) use (&$array) {
-			if(str_ends_with($key,':path')){
+			if(str_ends_with($key,' path')){
 				$value = path($value);
 				$key = substr($key, 0, -5);
 			}
@@ -43,12 +49,6 @@ if (!function_exists('Atomino\readini')) {
 		});
 		return $array;
 	}
-}
-
-function loadcfgset(array|string ...$files) {
-	$data = [];
-	foreach ($files as $file) $data[] = substr($file, -3) === 'php' ? include $file : \Atomino\readini($file);
-	return array_replace_recursive(...$data);
 }
 
 if (!function_exists('Atomino\cfg')) {
@@ -66,9 +66,9 @@ if (!function_exists('Atomino\inject')) {
 }
 
 if (!function_exists('Atomino\debug')) {
-	function debug(mixed $data, string $channel = Debug::DEBUG_DUMP) { dic()->has(Debug::class) && dic()->get(Debug::class)->handle($data, $channel); }
+	function debug(mixed $data, string $channel = DebugHandler::DEBUG_DUMP) { dic()->has(DebugHandler::class) && dic()->get(DebugHandler::class)->handle($data, $channel); }
 }
 
 if (!function_exists('Atomino\alert')) {
-	function alert(mixed $data) { \Atomino\debug($data, Debug::DEBUG_ALERT); }
+	function alert(mixed $data) { \Atomino\debug($data, DebugHandler::DEBUG_ALERT); }
 }
