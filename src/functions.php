@@ -2,11 +2,12 @@
 
 use Atomino\Core\Application;
 use Atomino\Core\Debug\DebugHandler;
+use Atomino\Neutrons\Path;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 if (!function_exists('Atomino\path')) {
-	if (!getenv('@root')) putenv("@root=" . realpath(__DIR__ . '/../../../..'));
-	function path(string $path = ''): string { return rtrim(getenv("@root"),'/') . '/' . ltrim($path, '/'); }
+	//function path(string $path = ''): string { return rtrim(getenv("@root"), '/') . '/' . ltrim($path, '/'); }
+	function path(string $path = ''): Path { return new Path($path); }
 }
 
 if (!function_exists('Atomino\dic')) {
@@ -17,8 +18,8 @@ if (!function_exists('Atomino\readenv')) {
 	function loadenv(string $file) {
 		if (file_exists($file)) {
 			$env = parse_ini_file($file, false, INI_SCANNER_TYPED);
-			foreach ($env as $key => $value){
-				if(str_ends_with($key,' path')){
+			foreach ($env as $key => $value) {
+				if (str_ends_with($key, ' path')) {
 					$value = path($value);
 					$key = substr($key, 0, -5);
 				}
@@ -35,7 +36,7 @@ if (!function_exists('Atomino\readini')) {
 		$ini = parse_ini_file($file, false, INI_SCANNER_TYPED);
 
 		array_walk($ini, function ($value, $key) use (&$array) {
-			if(str_ends_with($key,' path')){
+			if (str_ends_with($key, ' path')) {
 				$value = path($value);
 				$key = substr($key, 0, -5);
 			}
@@ -71,4 +72,16 @@ if (!function_exists('Atomino\debug')) {
 
 if (!function_exists('Atomino\alert')) {
 	function alert(mixed $data) { \Atomino\debug($data, DebugHandler::DEBUG_ALERT); }
+}
+
+if (!function_exists('Atomino\abspath')) {
+	function abspath($filename) {
+		$path = [];
+		foreach (explode('/', $filename) as $part) {
+			if ($part === '' || $part === '.') continue;
+			if ($part !== '..') array_push($path, $part);
+			elseif (count($path) > 0) array_pop($path);
+		}
+		return join('/', $path);
+	}
 }

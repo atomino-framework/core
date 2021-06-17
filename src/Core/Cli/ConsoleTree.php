@@ -1,5 +1,6 @@
 <?php namespace Atomino\Core\Cli;
 
+use Atomino\Neutrons\Path;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ConsoleTree{
@@ -24,7 +25,14 @@ class ConsoleTree{
 				if ($item[2] === ''){
 					$style->writeln('<fg=red;options=bold>-</>');
 				}else{
-					$style->writeln('<fg=white>' . $item[2] . '</>');
+					if($item[2] instanceof Path){
+						$style->writeln('<fg=yellow>' . ($item[2]->getRelative()) . '</>');
+
+					}elseif(is_bool($item[2])){
+						$style->writeln('<fg=magenta>' . ($item[2]?"true":"false") . '</>');
+					}else{
+						$style->writeln('<fg=white>' . $item[2] . '</>');
+					}
 				}
 			}
 		}
