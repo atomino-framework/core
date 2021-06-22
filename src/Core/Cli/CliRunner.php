@@ -12,8 +12,13 @@ class CliRunner implements CliRunnerInterface {
 		$this->application = new Application('Atomino', '1');
 	}
 
-	public function addCliModule(CliModule|Command $cliModule):static{
+	public function addCliModule(CliModule $cliModule):static{
 		$this->application->addCommands($cliModule->getCommands());
+		return $this;
+	}
+
+	public function addCommand(Command $command):static{
+		$this->application->add($command);
 		return $this;
 	}
 

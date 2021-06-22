@@ -1,13 +1,32 @@
 <?php namespace Atomino;
 
 use Atomino\Core\Application;
+use Atomino\Core\ApplicationConfig;
+use Atomino\Core\Config\ConfigInterface;
 use Atomino\Core\Debug\DebugHandler;
+use Atomino\Core\Debug\DebugProxy;
 use Atomino\Neutrons\Path;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+
+class_alias(ConfigInterface::class, ApplicationConfig::class);
 
 if (!function_exists('Atomino\path')) {
 	function path(string $path = ''): string { return rtrim(getenv("@root"),'/') . '/' . ltrim($path, '/'); }
 }
+
+if (!function_exists('Atomino\inject')) {
+	function inject(object $object, string $property, mixed $value) {
+		\Closure::bind(function ($property, $value) { $this->$property = $value; }, $object, get_class($object))($property, $value);
+	}
+}
+
+if (!function_exists('Atomino\debug')) {
+	function debug(mixed $data, string $channel = DebugHandler::DEBUG_DUMP) {
+		DebugProxy::debug($data, $channel);
+	}
+}
+
+
 //
 //if (!function_exists('Atomino\dic')) {
 //	function dic(): \DI\Container { return Application::getContainer(); }
@@ -58,18 +77,6 @@ if (!function_exists('Atomino\path')) {
 //if (!function_exists('Atomino\settings')) {
 //	function settings(string|null $key = null): mixed { return Application::getConfig("settings." . $key); }
 //}
-
-if (!function_exists('Atomino\inject')) {
-	function inject(object $object, string $property, mixed $value) {
-		\Closure::bind(function ($property, $value) { $this->$property = $value; }, $object, get_class($object))($property, $value);
-	}
-}
-
-if (!function_exists('Atomino\debug')) {
-	function debug(mixed $data, string $channel = DebugHandler::DEBUG_DUMP) { 
-		Application::getContainer()->has(DebugHandler::class) && Application::getContainer()->get(DebugHandler::class)->handle($data, $channel);
-	}
-}
 
 //if (!function_exists('Atomino\alert')) {
 //	function alert(mixed $data) { \Atomino\debug($data, DebugHandler::DEBUG_ALERT); }

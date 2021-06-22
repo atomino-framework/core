@@ -12,6 +12,7 @@ class CliCommand extends Command {
 	protected OutputInterface $output;
 	protected \Closure $executable;
 
+	public function __invoke(callable $exec) { $this->executable = $exec; }
 	public function define(callable $exec) { $this->executable = $exec; }
 	protected final function execute(InputInterface $input, OutputInterface $output): int {
 		$this->style = new Style($input, $output);
