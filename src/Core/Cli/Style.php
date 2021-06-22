@@ -1,6 +1,6 @@
 <?php
 
-namespace Atomino\Cli;
+namespace Atomino\Core\Cli;
 
 use Symfony\Component\Console\Cursor;
 use Symfony\Component\Console\Input\InputInterface;

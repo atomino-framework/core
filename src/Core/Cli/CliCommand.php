@@ -1,28 +1,27 @@
-<?php namespace Atomino\Cli;
+<?php namespace Atomino\Core\Cli;
 
-use Atomino\Cli\Exceptions\Error;
+use Atomino\Core\Cli\Exceptions\Error;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class CliCommand extends Command{
+class CliCommand extends Command {
 
 	protected Style $style;
 	protected InputInterface $input;
 	protected OutputInterface $output;
-	protected mixed $config;
+	protected \Closure $executable;
 
-	public function setConfig(mixed $config): void{ $this->config = $config; }
-
-	protected final function execute(InputInterface $input, OutputInterface $output):int{
+	public function define(callable $exec) { $this->executable = $exec; }
+	protected final function execute(InputInterface $input, OutputInterface $output): int {
 		$this->style = new Style($input, $output);
 		$this->input = $input;
 		$this->output = $output;
-		try{
-			$message = $this->exec($this->config) ?? 'OK';
+		try {
+			$message = ($this->executable)($input, $output, $this->style) ?? 'OK';
 			$this->style->newLine();
 			$this->style->writeln('<fg=green;options=bold>' . $message . '</>');
-		}catch (Error $e){
+		} catch (Error $e) {
 			$this->style->newLine();
 			$this->style->writeln('<fg=red;options=bold>' . ($e->getMessage() ?: 'terminated') . '</>');
 			$this->style->newLine();
@@ -30,6 +29,4 @@ abstract class CliCommand extends Command{
 		}
 		return 0;
 	}
-
-	abstract protected function exec(mixed $config);
 }
