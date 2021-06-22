@@ -4,6 +4,7 @@ use Atomino\Core\Config\ConfigInterface;
 use Atomino\Core\Debug\ErrorHandlerInterface;
 use Atomino\Core\Runner\CliRunnerInterface;
 use Atomino\Core\Runner\HttpRunnerInterface;
+use Atomino\Core\Runner\RunnerInterface;
 use DI\Container;
 use DI\ContainerBuilder;
 use function Atomino\cfg;
@@ -29,9 +30,34 @@ class Application {
 		return $builder->build();
 	}
 
-	public static function boot(callable|string|false $diLoader = false, string|bool $compiledContainer = false, string|bool $mode = false, string|bool $root = false) {
+	public static function cli(
+		callable|string|false $diLoader = false,
+		string|bool $compiledContainer = false,
+		string|bool $mode = false,
+		string|bool $root = false
+	){
+		self::boot($diLoader, $compiledContainer, $mode, $root);
+		static::$container->get(CliRunnerInterface::class)->run();
+	}
+
+	public static function http(
+		callable|string|false $diLoader = false,
+		string|bool $compiledContainer = false,
+		string|bool $mode = false,
+		string|bool $root = false
+	){
+		self::boot($diLoader, $compiledContainer, $mode, $root);
+		static::$container->get(HttpRunnerInterface::class)->run();
+	}
+
+	private static function boot(
+		callable|string|false $diLoader = false,
+		string|bool $compiledContainer = false,
+		string|bool $mode = false,
+		string|bool $root = false
+	) {
 		if ($diLoader === false) $diLoader = getenv("@di") . '/*.php';
-		if (is_string($diLoader)) $diLoader = Application::createDILoader($string);
+		if (is_string($diLoader)) $diLoader = Application::createDIContainerBuilder($diLoader);
 
 		if ($compiledContainer === false) $compiledContainer = getenv("@dicc");
 		else putenv("@dicc=" . $compiledContainer);
@@ -45,7 +71,6 @@ class Application {
 
 		if ($container->has(ErrorHandlerInterface::class)) $container->get(ErrorHandlerInterface::class)->register();
 		if ($container->has(BootInterface::class)) $container->get(BootInterface::class)->boot();
-		$container->get(http_response_code() ? HttpRunnerInterface::class : CliRunnerInterface::class)->run();
 	}
 
 	public static function createDIContainerBuilder($glob): callable { return fn(\DI\ContainerBuilder $builder) => $builder->addDefinitions(...glob($glob)); }
