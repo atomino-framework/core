@@ -1,6 +1,6 @@
-<?php namespace Atomino\Debug;
+<?php namespace Atomino\Core\Debug;
 
-use function Atomino\debug;
+use function Atomino\Core\Debug;
 
 interface ErrorHandlerInterface {
 
