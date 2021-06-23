@@ -18,7 +18,7 @@ class CoreCli extends CliModule {
 	public function clearCaches(CliCommand $command) {
 		$command->define(function (Input $input, Output $output, Style $style) {
 			$style->_task("Delete DI compiled container");
-			if (($file = getenv("@dicc")) && file_exists($file)) {
+			if (($file = Application::dicc()) && file_exists($file)) {
 				unlink($file);
 				$style->_task_ok();
 			}else{

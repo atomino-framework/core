@@ -2,35 +2,33 @@
 
 use Composer\Autoload\ClassLoader;
 
-class CodeFinder{
+class CodeFinder implements CodeFinderInterface {
 
-	public function __construct(private ClassLoader $classLoader){
-	}
+	public function __construct(private ClassLoader $classLoader){}
 
-	public function Psr4ClassSeeker($namespace, $pattern = '*.php'){
+	public function Psr4ClassSeeker(string $namespace, string $pattern = '*.php'): array {
 		$path = $this->Psr4ResolveNamespace($namespace);
 		return array_map(
 			function ($file) use ($namespace, $path){ return $namespace . "\\" . str_replace("/", "\\", substr($file, strlen($path), -4)); },
 			$this->fileSeeker($path, $pattern)
 		);
 	}
-
-	public function Psr4FileSeeker($namespace, $pattern = '*.php'){
+	public function Psr4FileSeeker(string $namespace, string $pattern = '*.php'): array {
 		$path = $this->Psr4ResolveNamespace($namespace);
 		return !is_null($path) ? $this->fileSeeker($path, $pattern) : [];
 	}
 
-	public function Psr4ResolveNamespace($namespace){
+	public function Psr4ResolveNamespace(string $namespace): string|null {
 		$path = $this->Psr4Resolve($namespace);
 		return !is_null($path) ? $path . '/' : null;
 	}
 
-	public function Psr4ResolveClass($class){
+	public function Psr4ResolveClass(string $class): string|null {
 		$path = $this->Psr4Resolve($class);
 		return !is_null($path) ? $path . '.php' : null;
 	}
 
-	public function Psr4Resolve($name){
+	public function Psr4Resolve(string $name): string|null {
 		/** @var ClassLoader $cl */
 		$prefixesPsr4 = $this->classLoader->getPrefixesPsr4();
 		$segments = explode('\\', $name);
@@ -49,7 +47,7 @@ class CodeFinder{
 		return null;
 	}
 
-	public function fileSeeker($path, $pattern = '*'){
+	public function fileSeeker(string $path, string $pattern = '*'): array {
 		$result = [];
 		$files = glob($path . $pattern);
 		foreach ($files as $file) if (is_file($file)) $result[] = $file;
