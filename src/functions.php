@@ -1,8 +1,10 @@
 <?php namespace Atomino;
 
 use Atomino\Core\Debug\DebugHandler;
+use Atomino\Core\Debug\DebugHandlerInterface;
 use Atomino\Core\Debug\DebugProxy;
 use Atomino\Neutrons\Path;
+use Monolog\Logger;
 
 if (!function_exists('Atomino\inject')) {
 	function inject(object $object, string $property, mixed $value) {
@@ -11,7 +13,7 @@ if (!function_exists('Atomino\inject')) {
 }
 
 if (!function_exists('Atomino\debug')) {
-	function debug(mixed $data, string $channel = DebugHandler::DEBUG_DUMP) {
-		DebugProxy::debug($data, $channel);
+	function debug(mixed $data, string $channel = DebugHandlerInterface::DEBUG_CHANNEL_USER, int $level = DebugHandlerInterface::INFO) {
+		DebugProxy::getHandler()?->handle($data, $channel, $level);
 	}
 }

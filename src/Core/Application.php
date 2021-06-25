@@ -10,6 +10,7 @@ class Application implements PathResolverInterface {
 
 	private Container $container;
 	private static self|null $instance = null;
+	private string $requestId;
 
 	const MODE_DEV = false;
 	const MODE_PROD = true;
@@ -22,9 +23,10 @@ class Application implements PathResolverInterface {
 		string|null $bootLoader,
 		string $runner
 	) {
-		$this->root = realpath($this->root);
 		if (!is_null(static::$instance)) throw new \Exception("Application can be instantiated once!");
 		static::$instance = $this;
+		$this->root = realpath($this->root);
+		$this->requestId = uniqid();
 		$this->container = $this->loadDI(is_string($diLoader) ? static::createDIContainerBuilder($diLoader) : $diLoader);
 		if (!is_null($bootLoader)) $this->container->get($bootLoader)->boot();
 		$this->container->get($runner)->run();
@@ -44,6 +46,7 @@ class Application implements PathResolverInterface {
 	public static function isDev(): bool { return static::$instance->mode === static::MODE_DEV; }
 	public static function isProd(): bool { return static::$instance->mode === static::MODE_PROD; }
 	public static function dicc(): string { return static::$instance->compiledContainer; }
+	public static function requestId(): string { return static::$instance->requestId; }
 
 	public static function createDIContainerBuilder($glob): callable { return fn(\DI\ContainerBuilder $builder) => $builder->addDefinitions(...glob($glob)); }
 	public static function getContainer(): Container { return static::$instance->container; }

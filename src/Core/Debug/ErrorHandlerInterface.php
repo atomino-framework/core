@@ -4,8 +4,9 @@ use function Atomino\Core\Debug;
 
 interface ErrorHandlerInterface {
 
-	const DEBUG_ERROR = 'ERROR';
-	const DEBUG_EXCEPTION = 'EXCEPTION';
+	const ERROR = 'ERROR';
+	const EXCEPTION = 'EXCEPTION';
+	const TRACE = 'TRACE';
 
 	public function register();
 
