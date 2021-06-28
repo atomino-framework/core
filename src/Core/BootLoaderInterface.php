@@ -3,5 +3,8 @@
 use DI\Container;
 
 interface BootLoaderInterface {
-	public function boot();
+	/**
+	 * This can be called in the \Atomino\Core\Application
+	 */
+	public function boot():void;
 }

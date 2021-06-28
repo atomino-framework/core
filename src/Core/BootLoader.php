@@ -2,20 +2,34 @@
 
 use DI\Container;
 
+
+/**
+ * Class BootLoader
+ *
+ * A basic - but fair to use - implementation of the BootLoaderInterface. It can collect BootInterface implementations or callables (functions).
+ *
+ * @package Atomino\Core
+ */
 class BootLoader implements BootLoaderInterface {
 
-	public function __construct(private Container $container) {}
+	public function __construct(private Container $container) { }
 
-	/** @var BootInterface[]  */
+	/** @var BootInterface[] */
 	private array $bootSequence = [];
 
-	public function boot() {
-		foreach ($this->bootSequence as $boot)$boot($this->container);
-	}
+	/**
+	 * @inheritdoc
+	 */
+	public function boot(): void { foreach ($this->bootSequence as $boot) $boot($this->container); }
 
-	public function add(BootInterface|callable|bool $bootable){
-		if(is_callable($bootable)) $this->bootSequence[] = $bootable;
+	/**
+	 * @param BootInterface|callable|bool $bootable
+	 * @return $this
+	 */
+	public function add(BootInterface|callable|bool $bootable) {
+		if (is_callable($bootable)) $this->bootSequence[] = $bootable;
 		return $this;
 	}
 
 }
+
