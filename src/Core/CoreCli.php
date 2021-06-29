@@ -3,6 +3,7 @@
 use Atomino\Core\Cli\Attributes\Command;
 use Atomino\Core\Cli\CliCommand;
 use Atomino\Core\Cli\CliModule;
+use Atomino\Core\Cli\CliTree;
 use Atomino\Core\Cli\ConsoleTree;
 use Atomino\Core\Cli\Style;
 use Symfony\Component\Console\Input\Input;
@@ -30,7 +31,7 @@ class CoreCli extends CliModule {
 	#[Command("show-config", "cfg", "Shows the config")]
 	public function showConfig(CliCommand $command) {
 		$command->define(function (Input $input, Output $output, Style $style) {
-			ConsoleTree::draw($this->config->all(), $style, 'cfg');
+			echo CliTree::draw($this->config->all(),'cfg');
 		});
 	}
 
