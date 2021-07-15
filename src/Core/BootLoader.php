@@ -26,8 +26,8 @@ class BootLoader implements BootLoaderInterface {
 	 * @param BootInterface|callable|bool $bootable
 	 * @return $this
 	 */
-	public function add(BootInterface|callable|bool $bootable) {
-		if (is_callable($bootable)) $this->bootSequence[] = $bootable;
+	public function add(BootInterface|callable $bootable) {
+		$this->bootSequence[] = $bootable;
 		return $this;
 	}
 
