@@ -19,7 +19,6 @@ class Application implements PathResolverInterface {
 
 	private Container $container;
 	private static self|null $instance = null;
-	private string $requestId;
 
 	const MODE_DEV = false;
 	const MODE_PROD = true;
@@ -45,17 +44,20 @@ class Application implements PathResolverInterface {
 		string $runner
 	) {
 		if (!is_null(static::$instance)) throw new \Exception("Application can be instantiated once!");
+
 		static::$instance = $this;
 		$this->root = realpath($this->root);
-		$this->requestId = uniqid();
-		$this->container = $this->loadDI(is_string($diLoader) ? static::createDIContainerBuilder($diLoader) : $diLoader);
+		$this->container = $this->loadDI($diLoader);
 
 		if (!is_null($bootLoader)) (fn(BootLoaderInterface $bootLoader) => $bootLoader->boot())($this->container->get($bootLoader));
-
 		(fn(RunnerInterface $runner) => $runner->run()) ($this->container->get($runner));
 	}
 
-	private function loadDI(callable $diLoader) {
+	private function loadDI(callable|string $diLoader) {
+		if (is_string($diLoader)) {
+			$files = $this->filterConfigFiles(glob($diLoader, GLOB_BRACE));
+			$diLoader = fn(\DI\ContainerBuilder $builder) => $builder->addDefinitions(...$files);
+		}
 		$builder = new ContainerBuilder();
 		$builder->useAutowiring(true);
 		if (!is_null($this->compiledContainer)) $builder->enableCompilation(dirname($this->compiledContainer), pathinfo($this->compiledContainer, PATHINFO_FILENAME));
@@ -63,47 +65,51 @@ class Application implements PathResolverInterface {
 		return $builder->build();
 	}
 
+
 	/**
+	 * Returns the application singleton
+	 *
+	 * @return static the application singleton
+	 */
+	public static function instance(): static { return static::$instance; }
+
+	/**
+	 * Converts project root based paths to absolute path
+	 *
 	 * @param string $path
 	 * @return string an absolute path based on the project root and the given path
 	 */
 	public function path(string $path = ''): string { return $this->root . ($path !== '' ? '/' . trim($path, '/') : ''); }
 
 	/**
-	 * @return static the application singleton
+	 * Returns true when the application runs in development mode
+	 *
+	 * @return bool
 	 */
-	public static function instance(): static { return static::$instance; }
+	public function isDev(): bool { return $this->mode === static::MODE_DEV; }
 
 	/**
-	 * @return bool is the application runs in development mode
+	 * Returns true when the application runs in production mode
+	 *
+	 * @return bool
 	 */
-	public static function isDev(): bool { return static::$instance->mode === static::MODE_DEV; }
+	public function isProd(): bool { return $this->mode === static::MODE_PROD; }
 
 	/**
-	 * @return bool is the application runs in production mode
+	 * Filters group of config or di files based on running mode (dev/prod)
+	 * config file can end with "@dev.php" or "@prod.php"
+	 * config file can end with "@local.php" (or "@dev@local.php" or "@prod@local.php") that will override other similarry named files.
+	 *
+	 * @param string[] $files
+	 * @return string[]
 	 */
-	public static function isProd(): bool { return static::$instance->mode === static::MODE_PROD; }
-
-	/**
-	 * @return string the path of the compiled container
-	 */
-	public static function dicc(): null|string { return static::$instance->compiledContainer; }
-
-	/**
-	 * @return string every time you create an appication it will get a unique id
-	 */
-	public static function requestId(): string { return static::$instance->requestId; }
-
-	/**
-	 * Creates a callable function, based on the glob argument given
-	 * @param string $glob the pattern to find the di definitions
-	 * @return callable the loader
-	 */
-	public static function createDIContainerBuilder(string $glob): callable { return fn(\DI\ContainerBuilder $builder) => $builder->addDefinitions(...glob($glob)); }
-
-	/**
-	 * Returns the di container. do not use this method.
-	 * @return Container
-	 */
-	public static function getContainer(): Container { return static::$instance->container; }
+	public function filterConfigFiles(array $files){
+		if ($this->isProd() ) $exclude = "@dev";
+		if ($this->isDev()) $exclude = "@prod";
+		$files = array_filter($files, static fn($item) => !str_contains($item, $exclude));
+		return array_filter($files, static function ($item) use ($files) {
+			$filename = pathinfo($item, PATHINFO_DIRNAME).'/'.pathinfo($item, PATHINFO_FILENAME);
+			return ((array_search($filename . '@local.php', $files)) !== false) ? false : true;
+		});
+	}
 }
