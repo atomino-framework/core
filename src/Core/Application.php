@@ -36,12 +36,12 @@ class Application implements PathResolverInterface {
 	 * @throws \DI\NotFoundException
 	 */
 	public function __construct(
-		callable|string $diLoader,
+		callable|string     $diLoader,
 		private string|null $compiledContainer,
-		private bool $mode,
-		private string $root,
-		string|null $bootLoader,
-		string $runner
+		private bool        $mode,
+		private string      $root,
+		string|null         $bootLoader = null,
+		string|null         $runner = null 
 	) {
 		if (!is_null(static::$instance)) throw new \Exception("Application can be instantiated once!");
 
@@ -50,7 +50,7 @@ class Application implements PathResolverInterface {
 		$this->container = $this->loadDI($diLoader);
 
 		if (!is_null($bootLoader)) (fn(BootLoaderInterface $bootLoader) => $bootLoader->boot())($this->container->get($bootLoader));
-		(fn(RunnerInterface $runner) => $runner->run()) ($this->container->get($runner));
+		if (!is_null($runner)) (fn(RunnerInterface $runner) => $runner->run()) ($this->container->get($runner));
 	}
 
 	private function loadDI(callable|string $diLoader) {
@@ -103,12 +103,12 @@ class Application implements PathResolverInterface {
 	 * @param string[] $files
 	 * @return string[]
 	 */
-	public function filterConfigFiles(array $files){
-		if ($this->isProd() ) $exclude = "@dev";
+	public function filterConfigFiles(array $files) {
+		if ($this->isProd()) $exclude = "@dev";
 		if ($this->isDev()) $exclude = "@prod";
 		$files = array_filter($files, static fn($item) => !str_contains($item, $exclude));
 		return array_filter($files, static function ($item) use ($files) {
-			$filename = pathinfo($item, PATHINFO_DIRNAME).'/'.pathinfo($item, PATHINFO_FILENAME);
+			$filename = pathinfo($item, PATHINFO_DIRNAME) . '/' . pathinfo($item, PATHINFO_FILENAME);
 			return ((array_search($filename . '@local.php', $files)) !== false) ? false : true;
 		});
 	}
