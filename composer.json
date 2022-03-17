@@ -10,6 +10,9 @@
         }
     ],
     "require": {
+        "atomino/util-attr": "1.*",
+        "atomino/util-dot-notation": "1.*",
+        "atomino/util-code-finder": "1.*",
         "php-di/php-di": "^6.3",
         "symfony/http-foundation": "^5.2",
         "symfony/event-dispatcher": "^5.2",
@@ -24,7 +27,8 @@
         "nabil1337/case-helper": "^0.1.0",
         "riimu/kit-phpencoder": "^2.4",
         "vria/nodiacritic": "^0.1.2",
-        "symfony/mime": "^5.2", "ext-gd": "*"
+        "symfony/mime": "^5.2",
+        "ext-gd": "*"
     },
     "autoload": {
         "psr-4": {
