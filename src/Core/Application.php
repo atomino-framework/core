@@ -19,6 +19,7 @@ class Application implements PathResolverInterface {
 
 	private Container $container;
 	private static self|null $instance = null;
+	public string $id;
 
 	const MODE_DEV = false;
 	const MODE_PROD = true;
@@ -41,13 +42,14 @@ class Application implements PathResolverInterface {
 		private bool        $mode,
 		private string      $root,
 		string|null         $bootLoader = null,
-		string|null         $runner = null 
+		string|null         $runner = null
 	) {
 		if (!is_null(static::$instance)) throw new \Exception("Application can be instantiated once!");
 
 		static::$instance = $this;
 		$this->root = realpath($this->root);
 		$this->container = $this->loadDI($diLoader);
+		$this->id = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
 
 		if (!is_null($bootLoader)) (fn(BootLoaderInterface $bootLoader) => $bootLoader->boot())($this->container->get($bootLoader));
 		if (!is_null($runner)) (fn(RunnerInterface $runner) => $runner->run()) ($this->container->get($runner));
